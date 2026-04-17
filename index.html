@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>26 Years | The Legacy</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Inter:wght@100;300;400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Inter:wght@300;400;500&display=swap');
 
         :root {
-            --bg: #080808; 
-            --text: #fdfcf9; 
+            --bg: #050505; 
+            --text: #ffffff; 
             --champagne: #d4bc8e; 
+            --sub-text: rgba(255, 255, 255, 0.65);
         }
 
         body, html {
@@ -20,145 +21,95 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Subtle Gold Frame Effect */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 15px; left: 15px; right: 15px; bottom: 15px;
-            border: 1px solid rgba(212, 188, 142, 0.15);
-            pointer-events: none;
-            z-index: 100;
+        /* Top Progress Bar */
+        #progress-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 3px;
+            background: rgba(212, 188, 142, 0.1); z-index: 5000;
         }
+        #progress-bar { height: 100%; width: 0%; background: var(--champagne); }
 
-        /* Grain Texture Overlay */
+        /* Grain & Background Wash */
         body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.12;
-            pointer-events: none;
-            z-index: 10;
+            opacity: 0.1; pointer-events: none; z-index: 10;
         }
 
         .mesh-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: 
-                radial-gradient(at 0% 0%, rgba(212, 188, 142, 0.08) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(212, 188, 142, 0.08) 0px, transparent 50%);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at 50% 50%, rgba(212, 188, 142, 0.05) 0%, transparent 80%);
         }
 
         /* Gate Screen */
         #gate {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 2000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 2000;
         }
-
         #gate h1 { 
-            font-family: 'Cormorant Garamond', serif; 
-            letter-spacing: 6px; font-size: 0.8rem; 
-            margin-bottom: 40px; color: var(--champagne);
-            text-transform: uppercase;
+            font-family: 'Cormorant Garamond', serif; letter-spacing: 5px; 
+            font-size: 1rem; color: var(--champagne); text-transform: uppercase;
         }
-
         input {
-            background: transparent; border: none;
-            border-bottom: 1px solid var(--champagne);
-            padding: 10px; font-size: 2.2rem; text-align: center;
-            outline: none; width: 260px; letter-spacing: 10px;
-            color: var(--text); font-family: 'Inter', sans-serif;
-            font-weight: 100;
+            background: transparent; border: none; border-bottom: 2px solid var(--champagne);
+            padding: 15px; font-size: 2.2rem; text-align: center; outline: none;
+            width: 260px; letter-spacing: 8px; color: var(--text); font-weight: 300;
         }
-
         .unlock-btn {
-            margin-top: 60px; background: transparent; color: var(--champagne);
-            padding: 14px 40px; border: 1px solid var(--champagne);
-            font-size: 0.6rem; letter-spacing: 5px;
-            text-transform: uppercase; cursor: pointer; display: none;
+            margin-top: 50px; background: transparent; color: var(--champagne);
+            padding: 15px 40px; border: 1px solid var(--champagne);
+            font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase; display: none;
         }
 
-        /* Content Reveal Animation */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 1.2s ease-out;
-        }
+        /* Main Story */
+        #story { display: none; opacity: 0; transition: opacity 2s ease; }
 
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
-        #story { display: none; opacity: 0; transition: opacity 3s ease; }
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 20vw; font-style: italic; margin: 0; font-weight: 300; }
+        .hero p { letter-spacing: 12px; text-transform: uppercase; font-size: 0.75rem; color: var(--champagne); margin-top: 20px; }
 
-        .hero {
-            height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center;
-        }
-
-        .hero h1 { 
-            font-family: 'Cormorant Garamond', serif; 
-            font-size: 5.5rem; font-style: italic; margin: 0; 
-            font-weight: 300; line-height: 0.9;
-        }
-
-        .hero p { letter-spacing: 12px; text-transform: uppercase; font-size: 0.55rem; color: var(--champagne); margin-top: 25px; }
-
-        .timeline { padding: 0 40px 150px; max-width: 450px; margin: 0 auto; }
-
-        .item {
-            position: relative;
-            padding: 100px 0;
-            border-bottom: 1px solid rgba(212, 188, 142, 0.1);
-        }
-
+        /* Timeline Items - Sized for Phone */
+        .timeline { padding: 0 30px 100px; max-width: 500px; margin: 0 auto; }
+        .item { padding: 80px 0; border-bottom: 1px solid rgba(212, 188, 142, 0.15); }
+        
         .year {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.8rem; color: var(--champagne);
-            letter-spacing: 6px; display: block; margin-bottom: 25px;
-            font-weight: 300;
+            font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; 
+            color: var(--champagne); letter-spacing: 4px; display: block; 
+            margin-bottom: 15px; font-weight: 600;
         }
-
+        
         h2 { 
-            font-family: 'Cormorant Garamond', serif; 
-            font-size: 2.8rem; font-weight: 600; 
-            margin: 0 0 20px 0; font-style: italic;
-            line-height: 1.1;
+            font-family: 'Cormorant Garamond', serif; font-size: 3rem; 
+            font-weight: 600; margin: 0 0 20px 0; font-style: italic; 
+            line-height: 1.1; letter-spacing: -1px;
         }
-
+        
         p.desc { 
-            font-size: 0.9rem; line-height: 2.2; color: rgba(255,255,255,0.4); 
-            font-weight: 300; letter-spacing: 0.5px;
+            font-size: 1.1rem; line-height: 1.8; color: var(--sub-text); 
+            font-weight: 400; margin: 0;
         }
 
-        .footer {
-            background: #000; padding: 160px 40px; text-align: center;
-        }
-
-        #days-stat { 
-            font-family: 'Cormorant Garamond', serif; 
-            font-size: 6rem; color: var(--champagne); 
-            display: block; font-weight: 300; margin-bottom: 10px;
-        }
+        .footer { background: #000; padding: 150px 30px; text-align: center; }
+        #days-stat { font-family: 'Cormorant Garamond', serif; font-size: 5.5rem; color: var(--champagne); font-weight: 300; }
+        
+        .footer p { letter-spacing: 5px; font-size: 0.75rem; color: #666; margin-top: 10px; margin-bottom: 40px; }
 
         #music-btn {
-            position: fixed; bottom: 40px; right: 40px; width: 45px; height: 45px;
-            background: #111; border: 1px solid var(--champagne);
-            border-radius: 50%; color: var(--champagne);
-            z-index: 3000; cursor: pointer; display: none;
+            position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px;
+            background: #111; border: 1px solid var(--champagne); border-radius: 50%; 
+            color: var(--champagne); z-index: 3000; display: none; font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
 
+    <div id="progress-container"><div id="progress-bar"></div></div>
     <div class="mesh-bg"></div>
 
     <audio id="player" loop crossorigin="anonymous">
@@ -168,7 +119,7 @@
     <button id="music-btn" onclick="toggleM()">♪</button>
 
     <div id="gate">
-        <h1>Private Chapter</h1>
+        <h1>THE FAMILY LEGACY</h1>
         <input type="tel" id="pin" placeholder="DDMMYYYY" maxlength="8" oninput="checkInput()">
         <button class="unlock-btn" id="go" onclick="unlock()">Enter & Play</button>
     </div>
@@ -177,7 +128,7 @@
         <section class="hero">
             <div class="reveal">
                 <h1>26 Years</h1>
-                <p>The Anniversary Legacy</p>
+                <p>Mom & Dad</p>
             </div>
         </section>
 
@@ -185,57 +136,57 @@
             <div class="item reveal">
                 <span class="year">2000</span>
                 <h2>The Union</h2>
-                <p class="desc">Two lives, one path. A sacred promise that has only grown more beautiful with every passing season.</p>
+                <p class="desc">The foundation of everything we are. A sacred promise that has only grown stronger with time.</p>
             </div>
 
             <div class="item reveal">
                 <span class="year">2003</span>
                 <h2>First Joy</h2>
-                <p class="desc">The year our world expanded. From the first car to the first child, the circle of love began to bloom.</p>
+                <p class="desc">Our family began its beautiful growth with the first child and our very first car.</p>
             </div>
 
             <div class="item reveal">
                 <span class="year">2005</span>
                 <h2>Sanctuary</h2>
-                <p class="desc">Building a home in Bhopal. More than just walls, it became the heart of every memory we hold dear.</p>
+                <p class="desc">Building our home in Bhopal—the heart of every memory we cherish today.</p>
             </div>
 
             <div class="item reveal">
                 <span class="year">2007</span>
-                <h2>Completeness</h2>
-                <p class="desc">Our family was made whole with the birth of our second child. Truly the happiest of years.</p>
+                <h2>Full Circle</h2>
+                <p class="desc">Our world was finally complete and filled with double the laughter.</p>
             </div>
 
             <div class="item reveal">
                 <span class="year">2012</span>
-                <h2>Growth</h2>
-                <p class="desc">Planting new roots in Indore. Expanding our horizons while keeping our bond tighter than ever.</p>
+                <h2>New Roots</h2>
+                <p class="desc">Expanding our horizons to Indore, growing together as a team.</p>
             </div>
 
             <div class="item reveal">
                 <span class="year">2014</span>
                 <h2>On The Road</h2>
-                <p class="desc">Welcoming the Ciaz. The witness to a decade of family road trips, loud music, and shared laughter.</p>
+                <p class="desc">Welcoming the Ciaz. The witness to a decade of road trips and shared miles.</p>
             </div>
 
             <div class="item reveal">
                 <span class="year">2021 — 2025</span>
                 <h2>Watching Us Fly</h2>
-                <p class="desc">Watching both children fly toward their futures. A proud testament to the foundation you both built.</p>
+                <p class="desc">Watching us both head to college—the ultimate proof of your hard work.</p>
             </div>
 
             <div class="item reveal" style="border: none;">
                 <span class="year">2026</span>
                 <h2>The Dream</h2>
-                <p class="desc">The farmhouse. A peaceful haven for nature, rest, and the next twenty-six years of us.</p>
+                <p class="desc">The farmhouse. A peaceful haven for the next twenty-six years of us.</p>
             </div>
         </div>
 
         <footer class="footer">
             <div class="reveal">
                 <span id="days-stat"></span>
-                <p style="letter-spacing: 6px; font-size: 0.6rem; color: #444; margin-bottom: 50px;">DAYS OF SHARED LOVE</p>
-                <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-style: italic; color: var(--champagne);">Happy Anniversary.</h2>
+                <p>DAYS OF SHARED LOVE</p>
+                <h2 style="font-size: 3.2rem; color: var(--champagne);">Happy Anniversary.</h2>
             </div>
         </footer>
     </div>
@@ -256,7 +207,7 @@
                 document.getElementById('story').style.display = "block";
                 setTimeout(() => { 
                     document.getElementById('story').style.opacity = "1";
-                    handleReveal(); // Trigger initial reveal
+                    handleReveal();
                 }, 100);
                 document.getElementById('music-btn').style.display = "block";
                 const diff = Math.floor((new Date() - new Date("2000-04-18")) / 86400000);
@@ -266,17 +217,19 @@
             }
         }
 
-        // Scroll Reveal Logic
         function handleReveal() {
             const reveals = document.querySelectorAll('.reveal');
             reveals.forEach(reveal => {
-                const windowHeight = window.innerHeight;
                 const elementTop = reveal.getBoundingClientRect().top;
-                const elementVisible = 100;
-                if (elementTop < windowHeight - elementVisible) {
+                if (elementTop < window.innerHeight - 100) {
                     reveal.classList.add('active');
                 }
             });
+
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
         }
 
         window.addEventListener('scroll', handleReveal);
